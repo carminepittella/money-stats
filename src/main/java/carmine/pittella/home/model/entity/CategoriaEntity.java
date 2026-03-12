@@ -1,5 +1,6 @@
 package carmine.pittella.home.model.entity;
 
+import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -12,7 +13,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = false)
 @Table(name = "CATEGORIA", uniqueConstraints = @UniqueConstraint(columnNames = {"categoria"}))
-public class CategoriaEntity {
+public class CategoriaEntity extends PanacheEntityBase {
 
     @Id
     @Column(name = "id_categoria")
@@ -20,6 +21,6 @@ public class CategoriaEntity {
     @SequenceGenerator(name = "categoria_seq", sequenceName = "CATEGORIA_SEQ")
     private Long id;
 
-    @Column(name = "descrizione", nullable = false, length = 50)
-    private String descrizione;
+    @Column(name = "categoria", nullable = false, length = 50)
+    private String categoria;
 }

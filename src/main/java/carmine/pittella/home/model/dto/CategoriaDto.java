@@ -6,9 +6,9 @@ import lombok.*;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@EqualsAndHashCode(of = "descrizione")
+@EqualsAndHashCode(of = "categoria")
 public class CategoriaDto {
 
     private Long id;
-    private String descrizione;
+    private String categoria;
 }

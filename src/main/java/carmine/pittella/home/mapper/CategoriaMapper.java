@@ -5,7 +5,7 @@ import carmine.pittella.home.model.entity.CategoriaEntity;
 import org.mapstruct.Builder;
 import org.mapstruct.Mapper;
 
-@Mapper(componentModel = "cdi", builder = @Builder(disableBuilder = true))
+@Mapper(componentModel = "jakarta", builder = @Builder(disableBuilder = true))
 
 public interface CategoriaMapper extends BaseMappingMapstruct<CategoriaDto, CategoriaEntity> {
 }

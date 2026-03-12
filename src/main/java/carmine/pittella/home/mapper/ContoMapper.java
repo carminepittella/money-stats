@@ -5,7 +5,7 @@ import carmine.pittella.home.model.entity.ContoEntity;
 import org.mapstruct.Builder;
 import org.mapstruct.Mapper;
 
-@Mapper(componentModel = "cdi", builder = @Builder(disableBuilder = true))
+@Mapper(componentModel = "jakarta", builder = @Builder(disableBuilder = true))
 
 public interface ContoMapper extends BaseMappingMapstruct<ContoDto, ContoEntity> {
 }

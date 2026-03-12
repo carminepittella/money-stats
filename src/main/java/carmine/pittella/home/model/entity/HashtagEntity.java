@@ -1,5 +1,6 @@
 package carmine.pittella.home.model.entity;
 
+import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -12,7 +13,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = false)
 @Table(name = "HASHTAG", uniqueConstraints = @UniqueConstraint(columnNames = {"hashtag"}))
-public class HashtagEntity {
+public class HashtagEntity extends PanacheEntityBase {
 
     @Id
     @Column(name = "id_hashtag")
