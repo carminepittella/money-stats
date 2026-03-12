@@ -6,10 +6,9 @@ import lombok.*;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@EqualsAndHashCode(of = {"nome", "cognome"})
-public class UtenteDto {
+@EqualsAndHashCode(of = "descrizione")
+public class CategoriaDto {
 
     private Long id;
-    private String nome;
-    private String cognome;
+    private String descrizione;
 }
