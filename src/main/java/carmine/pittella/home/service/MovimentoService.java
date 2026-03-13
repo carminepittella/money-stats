@@ -7,4 +7,5 @@ import java.util.List;
 public interface MovimentoService {
 
     List<MovimentoDto> findAll ();
+    void importExcelMovimenti();
 }
