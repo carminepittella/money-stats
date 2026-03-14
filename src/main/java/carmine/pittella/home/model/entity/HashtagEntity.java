@@ -2,12 +2,10 @@ package carmine.pittella.home.model.entity;
 
 import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
-@Data
+@Getter
+@Setter
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
@@ -18,7 +16,7 @@ public class HashtagEntity extends PanacheEntityBase {
     @Id
     @Column(name = "id_hashtag")
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "hashtag_seq")
-    @SequenceGenerator(name = "hashtag_seq", sequenceName = "HASHTAG_SEQ")
+    @SequenceGenerator(name = "hashtag_seq", sequenceName = "HASHTAG_SEQ", allocationSize = 1)
     private Long id;
 
     @Column(name = "hashtag", nullable = false, length = 50)

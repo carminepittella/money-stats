@@ -4,7 +4,10 @@ CREATE TABLE UTENTE
     id_utente NUMBER PRIMARY KEY,
     nome      VARCHAR2(50) NOT NULL,
     cognome   VARCHAR2(50) NOT NULL,
-    UNIQUE (nome, cognome)
+    username  VARCHAR2(50) NOT NULL,
+    password  VARCHAR2(255) NOT NULL,
+    ruolo     VARCHAR2(50) NOT NULL,
+    UNIQUE (username)
 );
 
 

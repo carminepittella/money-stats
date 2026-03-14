@@ -1,0 +1,53 @@
+package carmine.pittella.home.bean;
+
+import carmine.pittella.home.model.dto.UtenteDto;
+import carmine.pittella.home.model.dto.request.LoginRequestDto;
+import carmine.pittella.home.model.dto.response.LoginResponseDto;
+import carmine.pittella.home.service.AuthService;
+import carmine.pittella.home.service.PasswordService;
+import carmine.pittella.home.service.UtenteService;
+import io.smallrye.jwt.build.Jwt;
+import jakarta.enterprise.context.ApplicationScoped;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+
+import java.time.Duration;
+
+@Slf4j
+@ApplicationScoped
+@RequiredArgsConstructor
+public class AuthBean implements AuthService {
+
+    private final UtenteService utenteService;
+    private final PasswordService passwordService;
+
+    @Override
+    public LoginResponseDto login (LoginRequestDto request) {
+        // cerco l'utente per username
+        UtenteDto utenteDto = utenteService.findByUsername(request.getUsername());
+        if (utenteDto == null) {
+            //TODO: eccezione custom
+            return null;
+        }
+
+        // verifico la password
+        boolean passwordCorretta = passwordService.verifyPassword(request.getPassword(), utenteDto.getPassword());
+        if (!passwordCorretta) {
+            String errorMsg = String.format("Tentativo di login fallito per l'utente: %s", request.getUsername());
+            log.warn(errorMsg);
+            //TODO: eccezione custom
+            return null;
+        }
+
+        // TODO: genero il Token JWT
+        String token = Jwt.issuer("carmine-home-app")
+                .upn(utenteDto.getUsername())
+                .groups(utenteDto.getRuolo().name())
+                .claim("custom-info", "quello-che-vuoi")
+                .expiresIn(Duration.ofHours(6))
+                .sign();
+
+        log.info("Login effettuato con successo per l'utente: {}", request.getUsername());
+        return new LoginResponseDto(utenteDto.getUsername(), utenteDto.getRuolo().name(), token);
+    }
+}

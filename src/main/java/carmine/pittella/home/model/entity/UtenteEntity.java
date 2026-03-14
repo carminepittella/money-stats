@@ -1,18 +1,17 @@
 package carmine.pittella.home.model.entity;
 
+import carmine.pittella.home.model.enums.RuoloUtenteEnum;
 import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
-@Data
+@Getter
+@Setter
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = true)
-@Table(name = "UTENTE", uniqueConstraints = @UniqueConstraint(columnNames = {"nome", "cognome"}))
+@Table(name = "UTENTE", uniqueConstraints = @UniqueConstraint(columnNames = {"username"}))
 public class UtenteEntity extends PanacheEntityBase {
 
     @Id
@@ -26,4 +25,14 @@ public class UtenteEntity extends PanacheEntityBase {
 
     @Column(name = "cognome", nullable = false, length = 50)
     private String cognome;
+
+    @Column(name = "username", nullable = false, length = 50)
+    private String username;
+
+    @Column(name = "password", nullable = false)
+    private String password;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "ruolo", nullable = false, length = 50)
+    private RuoloUtenteEnum ruolo;
 }
