@@ -1,5 +1,6 @@
 package carmine.pittella.home.bean;
 
+import carmine.pittella.home.exception.InternalServerErrorException;
 import carmine.pittella.home.mapper.UtenteMapper;
 import carmine.pittella.home.model.dto.UtenteDto;
 import carmine.pittella.home.model.dto.request.UtenteCreateRequestDto;
@@ -42,8 +43,7 @@ public class UtenteBean implements UtenteService {
     @Override
     public UtenteDto findByUsername (String username) {
         if (username == null || username.isBlank()) {
-            //TODO: eccezione custom
-            return null;
+            throw new InternalServerErrorException("FIND_UTENTE", "username null");
         }
         return utenteMapper.toDto(utenteRepository.findByUsername(username));
     }
