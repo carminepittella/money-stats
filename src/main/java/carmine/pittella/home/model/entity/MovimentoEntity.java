@@ -16,7 +16,8 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = false)
-@Table(name = "MOVIMENTO")
+@Table(name = "MOVIMENTO",
+        uniqueConstraints = @UniqueConstraint(columnNames = {"id_conto", "data", "importo", "titolo", "id_categoria"}))
 public class MovimentoEntity extends PanacheEntityBase {
 
     @Id
@@ -57,4 +58,18 @@ public class MovimentoEntity extends PanacheEntityBase {
     @JoinColumn(name = "id_ricevente")
     public UtenteEntity ricevente;
 
+    @Override
+    public String toString () {
+        return "MovimentoEntity {" +
+               " data=" + data +
+               ", tipologia=" + tipologia +
+               ", titolo='" + titolo +
+               ", importo=" + importo +
+               ", commento='" + commento +
+               ", conto=" + conto +
+               ", categoria=" + categoria +
+               ", hashtag=" + hashtag +
+               ", ricevente=" + ricevente +
+               '}';
+    }
 }

@@ -79,6 +79,13 @@
             <artifactId>quarkus-hibernate-orm-panache</artifactId>
         </dependency>
         <!-- **************************** HYBERNATE **************************** -->
+        <!-- **************************** EXCEL **************************** -->
+        <dependency>
+            <groupId>io.quarkiverse.poi</groupId>
+            <artifactId>quarkus-poi</artifactId>
+            <version>2.1.2</version>
+        </dependency>
+        <!-- **************************** EXCEL **************************** -->
 
         <dependency>
             <groupId>io.quarkus</groupId>

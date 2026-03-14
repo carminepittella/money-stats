@@ -48,6 +48,7 @@ CREATE TABLE MOVIMENTO
     id_categoria,
     id_hashtag,
     id_ricevente,
+    UNIQUE (id_conto, data, importo, titolo, id_categoria),
     CONSTRAINT fk_conto FOREIGN KEY (id_conto) REFERENCES CONTO (id_conto),
     CONSTRAINT fk_categoria FOREIGN KEY (id_categoria) REFERENCES CATEGORIA (id_categoria),
     CONSTRAINT fk_hashtag FOREIGN KEY (id_hashtag) REFERENCES HASHTAG (id_hashtag),
