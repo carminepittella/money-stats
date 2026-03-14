@@ -1,5 +1,7 @@
 package carmine.pittella.home.bean;
 
+import carmine.pittella.home.exception.InternalServerErrorException;
+import carmine.pittella.home.exception.UnauthorizedException;
 import carmine.pittella.home.model.dto.UtenteDto;
 import carmine.pittella.home.model.dto.request.LoginRequestDto;
 import carmine.pittella.home.model.dto.response.LoginResponseDto;
@@ -26,26 +28,27 @@ public class AuthBean implements AuthService {
         // cerco l'utente per username
         UtenteDto utenteDto = utenteService.findByUsername(request.getUsername());
         if (utenteDto == null) {
-            //TODO: eccezione custom
-            return null;
+            throw new UnauthorizedException("LOGIN_ERROR", "Username e/o password errati");
         }
 
         // verifico la password
         boolean passwordCorretta = passwordService.verifyPassword(request.getPassword(), utenteDto.getPassword());
         if (!passwordCorretta) {
-            String errorMsg = String.format("Tentativo di login fallito per l'utente: %s", request.getUsername());
-            log.warn(errorMsg);
-            //TODO: eccezione custom
-            return null;
+            throw new UnauthorizedException("LOGIN_ERROR", "Username e/o password errati");
         }
 
-        // TODO: genero il Token JWT
-        String token = Jwt.issuer("carmine-home-app")
-                .upn(utenteDto.getUsername())
-                .groups(utenteDto.getRuolo().name())
-                .claim("custom-info", "quello-che-vuoi")
-                .expiresIn(Duration.ofHours(6))
-                .sign();
+        // genero il Token JWT
+        String token;
+        try {
+            token = Jwt.issuer("carmine-home-app")
+                    .upn(utenteDto.getUsername())
+                    .groups(utenteDto.getRuolo().name())
+                    .claim("custom-info", "quello-che-vuoi")
+                    .expiresIn(Duration.ofHours(6))
+                    .sign();
+        } catch (Exception e) {
+            throw new InternalServerErrorException("TOKEN_GENERATION", "si è verificato un errore durante la generazione del Token");
+        }
 
         log.info("Login effettuato con successo per l'utente: {}", request.getUsername());
         return new LoginResponseDto(utenteDto.getUsername(), utenteDto.getRuolo().name(), token);
