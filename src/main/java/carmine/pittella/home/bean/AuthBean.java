@@ -39,16 +39,16 @@ public class AuthBean implements AuthService {
 
         // genero il Token JWT
         String token;
-        try {
+//        try {
             token = Jwt.issuer("carmine-home-app")
                     .upn(utenteDto.getUsername())
                     .groups(utenteDto.getRuolo().name())
                     .claim("custom-info", "quello-che-vuoi")
                     .expiresIn(Duration.ofHours(6))
                     .sign();
-        } catch (Exception e) {
-            throw new InternalServerErrorException("TOKEN_GENERATION", "si è verificato un errore durante la generazione del Token");
-        }
+//        } catch (Exception e) {
+//            throw new InternalServerErrorException("TOKEN_GENERATION", "si è verificato un errore durante la generazione del Token", e.getMessage());
+//        }
 
         log.info("Login effettuato con successo per l'utente: {}", request.getUsername());
         return new LoginResponseDto(utenteDto.getUsername(), utenteDto.getRuolo().name(), token);

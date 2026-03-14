@@ -3,6 +3,7 @@ package carmine.pittella.home.controller;
 import carmine.pittella.home.model.dto.UtenteDto;
 import carmine.pittella.home.model.dto.request.UtenteCreateRequestDto;
 import carmine.pittella.home.service.UtenteService;
+import io.quarkus.security.Authenticated;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.validation.Valid;
 import jakarta.ws.rs.*;
@@ -10,6 +11,7 @@ import jakarta.ws.rs.core.MediaType;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.eclipse.microprofile.jwt.JsonWebToken;
 
 import java.util.List;
 
@@ -17,22 +19,23 @@ import java.util.List;
 @Path("/utenti")
 @RequestScoped
 @RequiredArgsConstructor
+@Produces({MediaType.APPLICATION_JSON})
 public class UtenteController {
 
+    private final JsonWebToken token;
     private final UtenteService utenteService;
 
-    //TODO: aggiungere autorizzazione
     @GET
     @Path("/find-all")
-    @Produces({MediaType.APPLICATION_JSON})
+    @Authenticated
     public List<UtenteDto> findAll () {
+        System.out.println(token);
         return utenteService.findAll();
     }
 
-    //TODO: aggiungere autorizzazione
     @POST
     @Path("/create")
-    @Produces({MediaType.APPLICATION_JSON})
+    @Authenticated
     @Consumes({MediaType.APPLICATION_JSON})
     public UtenteDto create (@NonNull @Valid UtenteCreateRequestDto newUtente) {
         return utenteService.createUtente(newUtente);
