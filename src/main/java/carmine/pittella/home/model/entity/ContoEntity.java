@@ -16,7 +16,7 @@ public class ContoEntity extends PanacheEntityBase {
     @Id
     @Column(name = "id_conto")
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "conto_seq")
-    @SequenceGenerator(name = "conto_seq", sequenceName = "SQC_CONTO", allocationSize = 1)
+    @SequenceGenerator(name = "conto_seq", sequenceName = "SEQ_CONTO", allocationSize = 1)
     private Long id;
 
     @Column(name = "descrizione", nullable = false, length = 50)

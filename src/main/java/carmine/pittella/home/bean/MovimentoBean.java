@@ -1,13 +1,16 @@
 package carmine.pittella.home.bean;
 
+import carmine.pittella.home.exception.BadRequestException;
 import carmine.pittella.home.mapper.MovimentoMapper;
 import carmine.pittella.home.model.dto.MovimentoDto;
 import carmine.pittella.home.repository.MovimentoRepository;
 import carmine.pittella.home.service.ExcelReaderService;
 import carmine.pittella.home.service.MovimentoService;
 import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.jboss.resteasy.reactive.multipart.FileUpload;
 
 import java.util.List;
 
@@ -26,20 +29,23 @@ public class MovimentoBean implements MovimentoService {
     }
 
     @Override
-    public void importExcelMovimenti () {
-        //TODO: passare il file excel
-        // facciamo finta che abbiamo estratto la lista dei movimenti
-        // passare il file excel
-        List<MovimentoDto> movimentiDtoList = excelReaderService.extractMovimenti();
-
-        if (movimentiDtoList == null || movimentiDtoList.isEmpty()) {
-            //TODO: lanciare eccezione custom
-            String errorMsg = String.format("Il caricamento del file %s ha restituito una lista vuota", "NOME_FILE");
+    @Transactional
+    public void importExcelMovimenti (FileUpload fileUpload) {
+        if (fileUpload == null) {
+            String errorMsg = "il file importato è NULL";
             log.error(errorMsg);
-            return; // da rimuovere
+            throw new BadRequestException("IMPORT_MOVIMENTI", errorMsg);
         }
 
-        movimentiDtoList.forEach(movimento ->
-                movimentoRepository.save(movimentoMapper.toEntity(movimento)));
+        // estraggo i movimenti dall'excel
+        List<MovimentoDto> movimentiDtoList = excelReaderService.extractMovimenti(fileUpload);
+
+        if (movimentiDtoList == null || movimentiDtoList.isEmpty()) {
+            String errorMsg = String.format("Il caricamento del file %s ha restituito una lista vuota", fileUpload.fileName());
+            log.error(errorMsg);
+            throw new BadRequestException("IMPORT_MOVIMENTI", errorMsg);
+        }
+
+        movimentoRepository.saveAll(movimentoMapper.toEntityList(movimentiDtoList));
     }
 }

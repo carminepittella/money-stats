@@ -16,7 +16,7 @@ public class HashtagEntity extends PanacheEntityBase {
     @Id
     @Column(name = "id_hashtag")
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "hashtag_seq")
-    @SequenceGenerator(name = "hashtag_seq", sequenceName = "HASHTAG_SEQ", allocationSize = 1)
+    @SequenceGenerator(name = "hashtag_seq", sequenceName = "SEQ_HASHTAG", allocationSize = 1)
     private Long id;
 
     @Column(name = "hashtag", nullable = false, length = 50)

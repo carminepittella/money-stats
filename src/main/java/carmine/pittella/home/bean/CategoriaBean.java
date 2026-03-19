@@ -5,6 +5,7 @@ import carmine.pittella.home.model.dto.CategoriaDto;
 import carmine.pittella.home.repository.CategoriaRepository;
 import carmine.pittella.home.service.CategoriaService;
 import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
 import java.util.List;
@@ -20,4 +21,12 @@ public class CategoriaBean implements CategoriaService {
     public List<CategoriaDto> findAll () {
         return categoriaMapper.toDtoList(categoriaRepository.findAll().stream().toList());
     }
+
+    @Override
+    @Transactional
+    public CategoriaDto findOrCreate (String categoria) {
+        return categoriaMapper.toDto(categoriaRepository.findOrCreate(categoria));
+    }
+
+
 }

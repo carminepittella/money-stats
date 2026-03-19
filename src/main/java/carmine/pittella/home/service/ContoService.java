@@ -6,5 +6,6 @@ import java.util.List;
 
 public interface ContoService {
 
-    List<ContoDto> findAll();
+    List<ContoDto> findAll ();
+    ContoDto findOrCreate (String contoStr);
 }
