@@ -13,6 +13,9 @@ import lombok.*;
 @Table(name = "CONTO", uniqueConstraints = @UniqueConstraint(columnNames = {"descrizione"}))
 public class ContoEntity extends PanacheEntityBase {
 
+    public static final String ID = "id";
+    public static final String DESCRIZIONE = "descrizione";
+
     @Id
     @Column(name = "id_conto")
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "conto_seq")

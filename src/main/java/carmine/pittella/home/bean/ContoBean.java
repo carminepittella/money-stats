@@ -19,7 +19,7 @@ public class ContoBean implements ContoService {
 
     @Override
     public List<ContoDto> findAll () {
-        return contoMapper.toDtoList(contoRepository.findAll().stream().toList());
+        return contoMapper.toDtoList(contoRepository.findAllSorted());
     }
 
     @Override

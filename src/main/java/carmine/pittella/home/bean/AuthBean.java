@@ -54,7 +54,7 @@ public class AuthBean implements AuthService {
         }
 
         log.info("Login effettuato con successo per l'utente: {}", request.getUsername());
-        return new LoginResponseDto(utenteDto.getUsername(), utenteDto.getRuolo().name(), token);
+        return new LoginResponseDto(utenteDto.getNome(), utenteDto.getCognome(), utenteDto.getUsername(), utenteDto.getRuolo().name(), token);
     }
 
     @Override

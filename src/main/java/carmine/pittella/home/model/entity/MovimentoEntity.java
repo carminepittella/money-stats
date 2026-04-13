@@ -18,6 +18,18 @@ import java.time.LocalDateTime;
         uniqueConstraints = @UniqueConstraint(columnNames = {"id_conto", "data", "importo", "titolo", "id_categoria"}))
 public class MovimentoEntity extends PanacheEntityBase {
 
+    public static final String ID = "id";
+    public static final String DATA = "data";
+    public static final String TIPOLOGIA = "tipologia";
+    public static final String TITOLO = "titolo";
+    public static final String IMPORTO = "importo";
+    public static final String COMMENTO = "commento";
+    public static final String CONTO = "conto";
+    public static final String CATEGORIA = "categoria";
+    public static final String HASHTAG = "hashtag";
+    public static final String RICEVENTE = "ricevente";
+
+
     @Id
     @Column(name = "id_movimento")
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "movimento_seq")

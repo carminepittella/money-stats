@@ -20,4 +20,8 @@ public class CategoriaRepository implements PanacheRepository<CategoriaEntity> {
         persist(categoriaEntity);
         return categoriaEntity;
     }
+
+    public List<CategoriaEntity> findAllSorted() {
+        return CategoriaEntity.list("order by categoria asc");
+    }
 }

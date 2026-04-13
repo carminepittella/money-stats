@@ -3,15 +3,19 @@ package carmine.pittella.home.bean;
 import carmine.pittella.home.exception.BadRequestException;
 import carmine.pittella.home.mapper.MovimentoMapper;
 import carmine.pittella.home.model.dto.MovimentoDto;
+import carmine.pittella.home.model.dto.request.MovimentiFilterRequestDto;
+import carmine.pittella.home.model.dto.response.DashboardStatsResponseDto;
 import carmine.pittella.home.repository.MovimentoRepository;
 import carmine.pittella.home.service.ExcelReaderService;
 import carmine.pittella.home.service.MovimentoService;
+import carmine.pittella.home.utils.Utils;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.jboss.resteasy.reactive.multipart.FileUpload;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Slf4j
@@ -27,6 +31,15 @@ public class MovimentoBean implements MovimentoService {
     public List<MovimentoDto> findAll () {
         return movimentoMapper.toDtoList(movimentoRepository.listAll().stream().toList());
     }
+
+    @Override
+    public List<MovimentoDto> findAllFiltered (MovimentiFilterRequestDto filtri) {
+        if (filtri == null) {
+            return List.of();
+        }
+        return movimentoMapper.toDtoList(movimentoRepository.findAllFiltered(filtri));
+    }
+
 
     @Override
     @Transactional
@@ -47,5 +60,13 @@ public class MovimentoBean implements MovimentoService {
         }
 
         movimentoRepository.saveAll(movimentoMapper.toEntityList(movimentiDtoList));
+    }
+
+    @Override
+    public DashboardStatsResponseDto getDashboardStats (MovimentiFilterRequestDto filter) {
+        LocalDate dataInizio = filter.getDataInizio() != null ? filter.getDataInizio() : LocalDate.of(1900, 1, 1);
+        LocalDate dataFine = filter.getDataFine() != null ? filter.getDataFine() : LocalDate.of(2100, 1, 1);
+
+        return movimentoRepository.getDashboardStats(dataInizio, dataFine);
     }
 }

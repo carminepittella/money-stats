@@ -5,6 +5,8 @@ import io.quarkus.hibernate.orm.panache.PanacheRepository;
 import jakarta.enterprise.context.ApplicationScoped;
 import lombok.extern.slf4j.Slf4j;
 
+import java.util.List;
+
 @Slf4j
 @ApplicationScoped
 public class ContoRepository implements PanacheRepository<ContoEntity> {
@@ -17,5 +19,9 @@ public class ContoRepository implements PanacheRepository<ContoEntity> {
         nuovoConto.setDescrizione(contoStr);
         persist(nuovoConto);
         return nuovoConto;
+    }
+
+    public List<ContoEntity> findAllSorted () {
+        return ContoEntity.list("order by descrizione asc");
     }
 }

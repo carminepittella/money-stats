@@ -13,6 +13,9 @@ import lombok.*;
 @Table(name = "HASHTAG", uniqueConstraints = @UniqueConstraint(columnNames = {"hashtag"}))
 public class HashtagEntity extends PanacheEntityBase {
 
+    public static final String ID = "id";
+    public static final String HASHTAG = "hashtag";
+
     @Id
     @Column(name = "id_hashtag")
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "hashtag_seq")

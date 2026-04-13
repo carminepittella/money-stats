@@ -19,7 +19,7 @@ public class CategoriaBean implements CategoriaService {
 
     @Override
     public List<CategoriaDto> findAll () {
-        return categoriaMapper.toDtoList(categoriaRepository.findAll().stream().toList());
+        return categoriaMapper.toDtoList(categoriaRepository.findAllSorted());
     }
 
     @Override

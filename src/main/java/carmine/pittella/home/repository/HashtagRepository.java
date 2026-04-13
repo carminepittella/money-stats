@@ -5,6 +5,8 @@ import io.quarkus.hibernate.orm.panache.PanacheRepository;
 import jakarta.enterprise.context.ApplicationScoped;
 import lombok.extern.slf4j.Slf4j;
 
+import java.util.List;
+
 @Slf4j
 @ApplicationScoped
 public class HashtagRepository implements PanacheRepository<HashtagEntity> {
@@ -17,5 +19,9 @@ public class HashtagRepository implements PanacheRepository<HashtagEntity> {
         hashtagEntity.setHashtag(hashtag);
         persist(hashtagEntity);
         return hashtagEntity;
+    }
+
+    public List<HashtagEntity> findAllSorted () {
+        return HashtagEntity.list("order by hashtag asc");
     }
 }

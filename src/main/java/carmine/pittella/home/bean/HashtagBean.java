@@ -19,7 +19,7 @@ public class HashtagBean implements HashtagService {
 
     @Override
     public List<HashtagDto> findAll () {
-        return hashtagMapper.toDtoList(hashtagRepository.listAll().stream().toList());
+        return hashtagMapper.toDtoList(hashtagRepository.findAllSorted());
     }
 
     @Override
