@@ -12,7 +12,6 @@ import jakarta.persistence.criteria.Order;
 import jakarta.persistence.criteria.Predicate;
 import lombok.extern.slf4j.Slf4j;
 
-import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -48,9 +47,9 @@ public class MovimentoRepository implements PanacheRepository<MovimentoEntity> {
                 .getSingleResult();
 
         return DashboardStatsResponseDto.builder()
-                .entrate(result[0] != null ? (BigDecimal) result[0] : BigDecimal.ZERO)
-                .uscite(result[1] != null ? (BigDecimal) result[1] : BigDecimal.ZERO)
-                .saldo(result[2] != null ? (BigDecimal) result[2] : BigDecimal.ZERO)
+                .entrate(((Number) result[0]).doubleValue())
+                .uscite(((Number) result[1]).doubleValue())
+                .saldo(((Number) result[2]).doubleValue())
                 .build();
     }
 

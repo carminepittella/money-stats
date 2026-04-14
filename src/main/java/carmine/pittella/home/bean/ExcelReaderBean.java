@@ -19,7 +19,6 @@ import org.jboss.resteasy.reactive.multipart.FileUpload;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.math.BigDecimal;
 import java.nio.file.Files;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -78,7 +77,7 @@ public class ExcelReaderBean implements ExcelReaderService {
 
                     // 1. Estrazione Importo e logica per la Tipologia
                     double importoVal = this.getNumericValue(row.getCell(COL_IMPORTO));
-                    BigDecimal importo = BigDecimal.valueOf(importoVal);
+                    Double importo = importoVal;
                     TipologiaEnum tipologia = importoVal < 0 ? TipologiaEnum.USCITA : TipologiaEnum.ENTRATA;
 
                     // 2. Estrazione Data

@@ -5,7 +5,6 @@ import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Getter
@@ -47,7 +46,7 @@ public class MovimentoEntity extends PanacheEntityBase {
     public String titolo;
 
     @Column(name = "importo", nullable = false, precision = 10, scale = 2)
-    public BigDecimal importo;
+    public Long importo;
 
     @Column(name = "commento")
     public String commento;
