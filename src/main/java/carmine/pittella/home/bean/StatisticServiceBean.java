@@ -7,77 +7,92 @@ import carmine.pittella.home.model.enums.IntervalStatsEnum;
 import java.time.LocalDate;
 import java.time.Period;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class StatisticServiceBean {
 
     public void prova () {
 
-        IntervalStatsEnum interval = IntervalStatsEnum.MESE;
-
+        // TODO: dati che saranno valorizzati in seguito
+        List<MovimentoDto> movimentiList = new ArrayList<>();
         LocalDate dataInizio = LocalDate.now();
         LocalDate dataFine = LocalDate.now();
 
         Period age = Period.between(dataInizio, dataFine);
 
-        int divisore = 0;
+        Map<IntervalStatsEnum, List<Double>> statsInterval = this.initializeMapStats();
+        Map<IntervalStatsEnum, List<Double>> statsIntervalIn = this.initializeMapStats();
+        Map<IntervalStatsEnum, List<Double>> statsIntervalOut = this.initializeMapStats();
 
-        switch (interval) {
-            case GIORNO: {
-                divisore = Math.max(age.getDays(), 1);
-                break;
-            }
+        double sumDay = 0;
+        double sumDayIn = 0;
+        double sumDayOut = 0;
 
-            case SETTIMANA: {
-                divisore = Math.max(age.getDays() / 7, 1);
-                break;
-            }
+        double sumWeek = 0;
+        double sumWeekIn = 0;
+        double sumWeekOut = 0;
 
-            case MESE: {
-                divisore = Math.max(age.getMonths(), 1);
-                break;
-            }
+        double sumMonth = 0;
+        double sumMonthIn = 0;
+        double sumMonthOut = 0;
 
-            case TRIMESTRE: {
-                divisore = Math.max((age.getMonths() / 3), 3);
-                break;
-            }
+        // ecc...
 
-            case ANNO: {
-                divisore = Math.max(age.getYears(), 1);
-                break;
-            }
-        }
 
-        List<MovimentoDto> movimentiList = new ArrayList<>();
 
-        double totale = 0;
-        double totaleIn = 0;
-        double totaleOut = 0;
-
-        for (MovimentoDto m : movimentiList) {
-            double importo = m.getImporto();
+        //TODO: sbagliatissimo !!! cosa se ci sono 185564611 giorni di differenza? cosa facciamo?
+        // non è detto che che tutti quei movimenti...
+        for (int i = 0; i < age.getDays(); i++) {
+            double importo = movimentiList.get(i).getImporto();
 
             if (importo > 0) {
-                totaleIn += importo;
+                sumDayIn += importo;
+                sumWeekIn += importo;
+                sumMonthIn += importo;
+                // ecc...
             } else {
-                totaleOut += importo;
+                sumDayOut += importo;
+                sumWeekOut += importo;
+                sumMonthOut += importo;
+                // ecc...
             }
-            totale += importo;
-        }
+            sumDay += importo;
+            sumWeek += importo;
+            sumMonth += importo;
+            // ecc...
 
+            // giorno
+            statsInterval.get(IntervalStatsEnum.GIORNO).add(sumDay);
+            statsIntervalIn.get(IntervalStatsEnum.GIORNO).add(sumDayIn);
+            statsIntervalOut.get(IntervalStatsEnum.GIORNO).add(sumDayOut);
+            sumDay = 0;
+            sumDayIn = 0;
+            sumDayOut = 0;
 
-        StatisticsResponseDto statisticsDto = new StatisticsResponseDto();
+            // settimana
+            if (i % 7 == 0) {
+                statsInterval.get(IntervalStatsEnum.SETTIMANA).add(sumWeek);
+                statsIntervalIn.get(IntervalStatsEnum.SETTIMANA).add(sumWeekIn);
+                statsIntervalOut.get(IntervalStatsEnum.SETTIMANA).add(sumWeekOut);
+                sumWeek = 0;
+                sumWeekIn = 0;
+                sumWeekOut = 0;
+            }
 
-        statisticsDto.setMedia(totale / divisore);
-        statisticsDto.setMediaIn(totaleIn / divisore);
-        statisticsDto.setMediaOut(totaleOut / divisore);
+            // mese
+            if (i % 30 == 0) {
+                statsInterval.get(IntervalStatsEnum.MESE).add(sumMonth);
+                statsIntervalIn.get(IntervalStatsEnum.MESE).add(sumMonthIn);
+                statsIntervalOut.get(IntervalStatsEnum.MESE).add(sumMonthOut);
+                sumMonth = 0;
+                sumMonthIn = 0;
+                sumMonthOut = 0;
+            }
 
-        List<Double> statsInterval;
-        List<Double> statsIntervalIn;
-        List<Double> statsIntervalOut;
+            // ecc...
 
-        for (int i = 0; i < divisore; i++) {
 
         }
 
@@ -85,30 +100,17 @@ public class StatisticServiceBean {
     }
 
 
+    // inizializza tutte le mappe con la chiave Interval, e una lista vuota
+    private Map<IntervalStatsEnum, List<Double>> initializeMapStats () {
+        Map<IntervalStatsEnum, List<Double>> map = new HashMap<>();
+        map.put(IntervalStatsEnum.GIORNO, new ArrayList<>());
+        map.put(IntervalStatsEnum.SETTIMANA, new ArrayList<>());
+        map.put(IntervalStatsEnum.MESE, new ArrayList<>());
+        map.put(IntervalStatsEnum.TRIMESTRE, new ArrayList<>());
+        map.put(IntervalStatsEnum.ANNO, new ArrayList<>());
+        return map;
+    }
+
+
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 

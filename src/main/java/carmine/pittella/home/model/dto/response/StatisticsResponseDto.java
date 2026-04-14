@@ -10,15 +10,14 @@ import java.util.Map;
 @Data
 public class StatisticsResponseDto {
 
-    private IntervalStatsEnum interval;
-
     private Map<CategoriaDto, Double> statsCategoria;
+    private Map<CategoriaDto, Double> statsCategoriaIn;
+    private Map<CategoriaDto, Double> statsCategoriaOut;
 
-    private Double media;
-    private Double mediaIn;
-    private Double mediaOut;
+    private Map<IntervalStatsEnum, List<Double>> statsInterval;
+    private Map<IntervalStatsEnum, List<Double>> statsIntervalIn;
+    private Map<IntervalStatsEnum, List<Double>> statsIntervalOut;
 
-    private List<Double> statsInterval;
-    private List<Double> statsIntervalIn;
-    private List<Double> statsIntervalOut;
+
+
 }
