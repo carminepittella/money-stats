@@ -4,6 +4,7 @@ import carmine.pittella.home.model.enums.TipologiaEnum;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.Comparator;
 
 @Data
 @Builder
@@ -22,4 +23,8 @@ public class MovimentoDto {
     public CategoriaDto categoria;
     public HashtagDto hashtag;
     public UtenteDto ricevente;
+
+    public static final Comparator<MovimentoDto> COMPARATOR_DATA_ASC =
+            Comparator.comparing(MovimentoDto::getData).reversed();
+
 }

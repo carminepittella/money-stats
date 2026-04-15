@@ -5,7 +5,7 @@ import carmine.pittella.home.model.dto.response.StatisticsResponseDto;
 import carmine.pittella.home.model.enums.IntervalStatsEnum;
 
 import java.time.LocalDate;
-import java.time.Period;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -13,101 +13,107 @@ import java.util.Map;
 
 public class StatisticServiceBean {
 
-    public void prova () {
+    private int daysDiff = 0;
 
-        // TODO: dati che saranno valorizzati in seguito
-        List<MovimentoDto> movimentiList = new ArrayList<>();
-        LocalDate dataInizio = LocalDate.now();
-        LocalDate dataFine = LocalDate.now();
+    public StatisticsResponseDto prova (List<MovimentoDto> movimentiList, LocalDate dataInizio, LocalDate dataFine) {
+        StatisticsResponseDto response = new StatisticsResponseDto();
 
-        Period age = Period.between(dataInizio, dataFine);
+        daysDiff = (int) ChronoUnit.DAYS.between(dataInizio, dataFine);
 
         Map<IntervalStatsEnum, List<Double>> statsInterval = this.initializeMapStats();
         Map<IntervalStatsEnum, List<Double>> statsIntervalIn = this.initializeMapStats();
         Map<IntervalStatsEnum, List<Double>> statsIntervalOut = this.initializeMapStats();
 
-        double sumDay = 0;
-        double sumDayIn = 0;
-        double sumDayOut = 0;
+        /* ************** variabili riciclate ************** */
+        LocalDate dataNextDay = dataInizio.plusDays(1);
+        LocalDate dataNextWeek = dataInizio.plusWeeks(1);
+        LocalDate dataNextMonth = dataInizio.plusMonths(1);
 
-        double sumWeek = 0;
-        double sumWeekIn = 0;
-        double sumWeekOut = 0;
+        LocalDate dataMov;
+        /* ************** variabili riciclate ************** */
 
-        double sumMonth = 0;
-        double sumMonthIn = 0;
-        double sumMonthOut = 0;
+        // io li scorro tutti una volta sola (devono essere ordinati per data crescente)
+        // mi chiedo progressivamente (magari salvando un indice di dove sono arrivato)
+        // se la data rientra nel range --> posso fare tutti gli intervalli in un solo ciclo.
+        movimentiList.sort(MovimentoDto.COMPARATOR_DATA_ASC);
+        int currentIdxDay = 0;
+        int currentIdxWeek = 0;
 
-        // ecc...
-
-
-
-        //TODO: sbagliatissimo !!! cosa se ci sono 185564611 giorni di differenza? cosa facciamo?
-        // non è detto che che tutti quei movimenti...
-        for (int i = 0; i < age.getDays(); i++) {
-            double importo = movimentiList.get(i).getImporto();
-
-            if (importo > 0) {
-                sumDayIn += importo;
-                sumWeekIn += importo;
-                sumMonthIn += importo;
-                // ecc...
-            } else {
-                sumDayOut += importo;
-                sumWeekOut += importo;
-                sumMonthOut += importo;
-                // ecc...
-            }
-            sumDay += importo;
-            sumWeek += importo;
-            sumMonth += importo;
-            // ecc...
+        for (MovimentoDto m : movimentiList) {
+            dataMov = m.getData().toLocalDate();
+            double importoMov = m.getImporto();
 
             // giorno
-            statsInterval.get(IntervalStatsEnum.GIORNO).add(sumDay);
-            statsIntervalIn.get(IntervalStatsEnum.GIORNO).add(sumDayIn);
-            statsIntervalOut.get(IntervalStatsEnum.GIORNO).add(sumDayOut);
-            sumDay = 0;
-            sumDayIn = 0;
-            sumDayOut = 0;
+            if (dataMov.isBefore(dataNextDay)) {
+                int finalCurrentIdxDay = currentIdxDay;
+                if (m.getImporto() > 0) {
+                    statsIntervalIn.computeIfPresent(IntervalStatsEnum.GIORNO, (interval, sum) -> {
+                        sum.set(finalCurrentIdxDay, sum.get(finalCurrentIdxDay) + importoMov);
+                        return sum;
+                    });
+                } else {
+                    statsIntervalOut.computeIfPresent(IntervalStatsEnum.GIORNO, (interval, sum) -> {
+                        sum.set(finalCurrentIdxDay, sum.get(finalCurrentIdxDay) + importoMov);
+                        return sum;
+                    });
+                }
+                statsInterval.computeIfPresent(IntervalStatsEnum.GIORNO, (interval, sum) -> {
+                    sum.set(finalCurrentIdxDay, sum.get(finalCurrentIdxDay) + importoMov);
+                    return sum;
+                });
+            } else {
+                // guardo quanti giorni sono passati
+                long slotVuoti = ChronoUnit.DAYS.between(dataNextDay, dataMov);
+                for (int i = currentIdxDay + 1; i < slotVuoti + i; i++) {
+                    int finalI = i;
+                    statsInterval.computeIfPresent(IntervalStatsEnum.GIORNO, (interval, sum) -> {
+                        sum.set(finalI, (double) 0);
+                        return sum;
+                    });
+                }
+
+                dataNextDay = dataMov;
+
+            }
 
             // settimana
-            if (i % 7 == 0) {
-                statsInterval.get(IntervalStatsEnum.SETTIMANA).add(sumWeek);
-                statsIntervalIn.get(IntervalStatsEnum.SETTIMANA).add(sumWeekIn);
-                statsIntervalOut.get(IntervalStatsEnum.SETTIMANA).add(sumWeekOut);
-                sumWeek = 0;
-                sumWeekIn = 0;
-                sumWeekOut = 0;
+            if (dataMov.isBefore(dataNextWeek)) {
+                int finalCurrentIdxWeek = currentIdxWeek;
+                if (m.getImporto() > 0) {
+                    statsIntervalIn.computeIfPresent(IntervalStatsEnum.SETTIMANA, (interval, sum) -> {
+                        sum.set(finalCurrentIdxWeek, sum.get(finalCurrentIdxWeek) + importoMov);
+                        return sum;
+                    });
+                } else {
+                    statsIntervalOut.computeIfPresent(IntervalStatsEnum.SETTIMANA, (interval, sum) -> {
+                        sum.set(finalCurrentIdxWeek, sum.get(finalCurrentIdxWeek) + importoMov);
+                        return sum;
+                    });
+                }
+                statsInterval.computeIfPresent(IntervalStatsEnum.SETTIMANA, (interval, sum) -> {
+                    sum.set(finalCurrentIdxWeek, sum.get(finalCurrentIdxWeek) + importoMov);
+                    return sum;
+                });
+            } else {
+                dataNextWeek = dataMov;
             }
 
-            // mese
-            if (i % 30 == 0) {
-                statsInterval.get(IntervalStatsEnum.MESE).add(sumMonth);
-                statsIntervalIn.get(IntervalStatsEnum.MESE).add(sumMonthIn);
-                statsIntervalOut.get(IntervalStatsEnum.MESE).add(sumMonthOut);
-                sumMonth = 0;
-                sumMonthIn = 0;
-                sumMonthOut = 0;
-            }
-
-            // ecc...
-
-
+            // ecc
         }
 
 
+        return response;
     }
 
 
     // inizializza tutte le mappe con la chiave Interval, e una lista vuota
     private Map<IntervalStatsEnum, List<Double>> initializeMapStats () {
         Map<IntervalStatsEnum, List<Double>> map = new HashMap<>();
-        map.put(IntervalStatsEnum.GIORNO, new ArrayList<>());
-        map.put(IntervalStatsEnum.SETTIMANA, new ArrayList<>());
-        map.put(IntervalStatsEnum.MESE, new ArrayList<>());
-        map.put(IntervalStatsEnum.TRIMESTRE, new ArrayList<>());
-        map.put(IntervalStatsEnum.ANNO, new ArrayList<>());
+        map.put(IntervalStatsEnum.GIORNO, new ArrayList<>(daysDiff));
+        map.put(IntervalStatsEnum.SETTIMANA, new ArrayList<>(daysDiff % 7 > 0 ? daysDiff / 7 : 1));
+        map.put(IntervalStatsEnum.MESE, new ArrayList<>(daysDiff % 30 > 0 ? daysDiff / 30 : 1));
+        map.put(IntervalStatsEnum.TRIMESTRE, new ArrayList<>(daysDiff % 90 > 0 ? daysDiff / 90 : 1));
+        map.put(IntervalStatsEnum.ANNO, new ArrayList<>(daysDiff % 365 > 0 ? daysDiff / 365 : 1));
         return map;
     }
 
