@@ -1,11 +1,17 @@
 package carmine.pittella.home.model.dto.request;
 
 import jakarta.ws.rs.QueryParam;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 
 @Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class MovimentiFilterRequestDto {
 
     @QueryParam("dataInizio")

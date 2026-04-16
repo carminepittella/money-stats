@@ -3,11 +3,11 @@ package carmine.pittella.home.controller;
 import carmine.pittella.home.model.dto.MovimentoDto;
 import carmine.pittella.home.model.dto.request.MovimentiFilterRequestDto;
 import carmine.pittella.home.model.dto.response.DashboardStatsResponseDto;
+import carmine.pittella.home.model.dto.response.StatisticsResponseDto;
 import carmine.pittella.home.service.MovimentoService;
+import carmine.pittella.home.service.StatisticService;
 import io.quarkus.security.Authenticated;
 import jakarta.enterprise.context.RequestScoped;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
@@ -16,7 +16,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.jboss.resteasy.reactive.RestForm;
 import org.jboss.resteasy.reactive.multipart.FileUpload;
 
-import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 
@@ -29,6 +28,7 @@ import java.util.Map;
 public class MovimentoController {
 
     private final MovimentoService movimentoService;
+    private final StatisticService statisticService;
 
     @GET
     @Path("/find-all")
@@ -54,6 +54,18 @@ public class MovimentoController {
     @Path("/dashboard-stats")
     public DashboardStatsResponseDto dashboardStats (@BeanParam MovimentiFilterRequestDto filter) {
         return movimentoService.getDashboardStats(filter);
+    }
+
+    @GET
+    @Path("/statistics")
+    public StatisticsResponseDto getStatistics (@BeanParam MovimentiFilterRequestDto filter) {
+        return statisticService.getStatistics(filter);
+    }
+
+    @GET
+    @Path("/statistics-opt")
+    public StatisticsResponseDto getStatisticsOptimized (@BeanParam MovimentiFilterRequestDto filter) {
+        return statisticService.getStatisticsOptimized(filter);
     }
 
 
