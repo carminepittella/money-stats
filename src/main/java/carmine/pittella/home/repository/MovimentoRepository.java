@@ -47,9 +47,9 @@ public class MovimentoRepository implements PanacheRepository<MovimentoEntity> {
                 .getSingleResult();
 
         return DashboardStatsResponseDto.builder()
-                .entrate(((Number) result[0]).doubleValue())
-                .uscite(((Number) result[1]).doubleValue())
-                .saldo(((Number) result[2]).doubleValue())
+                .entrate(((Number) (result[0] != null ? result[0] : 0)).doubleValue())
+                .uscite(((Number) (result[1] != null ? result[1] : 0)).doubleValue())
+                .saldo(((Number) (result[2] != null ? result[2] : 0)).doubleValue())
                 .build();
     }
 

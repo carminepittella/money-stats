@@ -62,11 +62,4 @@ public class MovimentoController {
         return statisticService.getStatistics(filter);
     }
 
-    @GET
-    @Path("/statistics-opt")
-    public StatisticsResponseDto getStatisticsOptimized (@BeanParam MovimentiFilterRequestDto filter) {
-        return statisticService.getStatisticsOptimized(filter);
-    }
-
-
 }
