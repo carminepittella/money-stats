@@ -1,0 +1,31 @@
+package carmine.pittella.home.model.dto.request;
+
+import jakarta.ws.rs.QueryParam;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import java.time.LocalDate;
+
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+public class MovimentiFilterRequestDto {
+
+    @QueryParam("dataInizio")
+    private LocalDate dataInizio;
+
+    @QueryParam("dataFine")
+    private LocalDate dataFine;
+
+    @QueryParam("idCategoria")
+    private Long idCategoria;
+
+    @QueryParam("idConto")
+    private Long idConto;
+
+    @QueryParam("idHashtag")
+    private Long idHashtag;
+}

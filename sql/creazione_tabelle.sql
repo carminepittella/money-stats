@@ -4,7 +4,10 @@ CREATE TABLE UTENTE
     id_utente NUMBER PRIMARY KEY,
     nome      VARCHAR2(50) NOT NULL,
     cognome   VARCHAR2(50) NOT NULL,
-    UNIQUE (nome, cognome)
+    username  VARCHAR2(50) NOT NULL,
+    password  VARCHAR2(255) NOT NULL,
+    ruolo     VARCHAR2(50) NOT NULL,
+    UNIQUE (username)
 );
 
 
@@ -48,6 +51,7 @@ CREATE TABLE MOVIMENTO
     id_categoria,
     id_hashtag,
     id_ricevente,
+    UNIQUE (id_conto, data, importo, titolo, id_categoria),
     CONSTRAINT fk_conto FOREIGN KEY (id_conto) REFERENCES CONTO (id_conto),
     CONSTRAINT fk_categoria FOREIGN KEY (id_categoria) REFERENCES CATEGORIA (id_categoria),
     CONSTRAINT fk_hashtag FOREIGN KEY (id_hashtag) REFERENCES HASHTAG (id_hashtag),

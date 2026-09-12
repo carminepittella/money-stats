@@ -5,6 +5,7 @@ import carmine.pittella.home.model.dto.HashtagDto;
 import carmine.pittella.home.repository.HashtagRepository;
 import carmine.pittella.home.service.HashtagService;
 import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
 import java.util.List;
@@ -18,6 +19,14 @@ public class HashtagBean implements HashtagService {
 
     @Override
     public List<HashtagDto> findAll () {
-        return hashtagMapper.toDtoList(hashtagRepository.listAll().stream().toList());
+        return hashtagMapper.toDtoList(hashtagRepository.findAllSorted());
     }
+
+    @Override
+    @Transactional
+    public HashtagDto findOrCreate (String hashtag) {
+        return hashtagMapper.toDto(hashtagRepository.findOrCreate(hashtag));
+    }
+
+
 }

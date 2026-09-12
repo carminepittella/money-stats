@@ -7,4 +7,5 @@ import java.util.List;
 public interface CategoriaService {
 
     List<CategoriaDto> findAll ();
+    CategoriaDto findOrCreate (String c);
 }

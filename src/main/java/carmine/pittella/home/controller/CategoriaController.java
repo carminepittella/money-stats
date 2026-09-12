@@ -2,6 +2,7 @@ package carmine.pittella.home.controller;
 
 import carmine.pittella.home.model.dto.CategoriaDto;
 import carmine.pittella.home.service.CategoriaService;
+import io.quarkus.security.Authenticated;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.Path;
@@ -15,6 +16,7 @@ import java.util.List;
 
 @Slf4j
 @Path("/categorie")
+@Authenticated
 @RequestScoped
 @RequiredArgsConstructor
 public class CategoriaController {

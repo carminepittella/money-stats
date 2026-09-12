@@ -3,21 +3,32 @@ package carmine.pittella.home.model.entity;
 import carmine.pittella.home.model.enums.TipologiaEnum;
 import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
-@Data
+@Getter
+@Setter
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = false)
-@Table(name = "MOVIMENTO")
+@Table(name = "MOVIMENTO",
+        uniqueConstraints = @UniqueConstraint(columnNames = {"id_conto", "data", "importo", "titolo", "id_categoria"}))
 public class MovimentoEntity extends PanacheEntityBase {
+
+    public static final String ID = "id";
+    public static final String DATA = "data";
+    public static final String TIPOLOGIA = "tipologia";
+    public static final String TITOLO = "titolo";
+    public static final String IMPORTO = "importo";
+    public static final String COMMENTO = "commento";
+    public static final String CONTO = "conto";
+    public static final String CATEGORIA = "categoria";
+    public static final String HASHTAG = "hashtag";
+    public static final String RICEVENTE = "ricevente";
+
 
     @Id
     @Column(name = "id_movimento")
@@ -57,4 +68,18 @@ public class MovimentoEntity extends PanacheEntityBase {
     @JoinColumn(name = "id_ricevente")
     public UtenteEntity ricevente;
 
+    @Override
+    public String toString () {
+        return "MovimentoEntity {" +
+               " data=" + data +
+               ", tipologia=" + tipologia +
+               ", titolo='" + titolo +
+               ", importo=" + importo +
+               ", commento='" + commento +
+               ", conto=" + conto +
+               ", categoria=" + categoria +
+               ", hashtag=" + hashtag +
+               ", ricevente=" + ricevente +
+               '}';
+    }
 }

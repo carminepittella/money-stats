@@ -18,6 +18,7 @@
         <surefire-plugin.version>3.5.4</surefire-plugin.version>
         <org.projectlombok.version>1.18.32</org.projectlombok.version>
         <org.mapstruct.version>1.5.5.Final</org.mapstruct.version>
+        <jakarta.validation.version>3.1.1</jakarta.validation.version>
     </properties>
 
     <dependencyManagement>
@@ -79,6 +80,44 @@
             <artifactId>quarkus-hibernate-orm-panache</artifactId>
         </dependency>
         <!-- **************************** HYBERNATE **************************** -->
+        <!-- **************************** EXCEL **************************** -->
+        <dependency>
+            <groupId>io.quarkiverse.poi</groupId>
+            <artifactId>quarkus-poi</artifactId>
+            <version>2.1.2</version>
+        </dependency>
+        <!-- **************************** EXCEL **************************** -->
+        <!-- **************************** CRYPT PASS **************************** -->
+        <dependency>
+            <groupId>io.quarkus</groupId>
+            <artifactId>quarkus-security</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.quarkus</groupId>
+            <artifactId>quarkus-elytron-security-properties-file</artifactId>
+        </dependency>
+        <!-- **************************** CRYPT PASS **************************** -->
+        <!-- **************************** TOKEN JWT **************************** -->
+        <dependency>
+            <groupId>io.quarkus</groupId>
+            <artifactId>quarkus-smallrye-jwt</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.quarkus</groupId>
+            <artifactId>quarkus-smallrye-jwt-build</artifactId>
+        </dependency>
+        <!-- **************************** TOKEN JWT **************************** -->
+
+        <dependency>
+            <groupId>jakarta.validation</groupId>
+            <artifactId>jakarta.validation-api</artifactId>
+            <version>${jakarta.validation.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>io.quarkus</groupId>
+            <artifactId>quarkus-hibernate-validator</artifactId>
+        </dependency>
 
         <dependency>
             <groupId>io.quarkus</groupId>
@@ -95,6 +134,16 @@
             <groupId>io.rest-assured</groupId>
             <artifactId>rest-assured</artifactId>
             <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>com.oracle.database.security</groupId>
+            <artifactId>oraclepki</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.oracle.database.jdbc</groupId>
+            <artifactId>ojdbc11</artifactId>
         </dependency>
     </dependencies>
 

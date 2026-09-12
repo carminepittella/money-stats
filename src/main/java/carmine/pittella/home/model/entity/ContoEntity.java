@@ -2,12 +2,10 @@ package carmine.pittella.home.model.entity;
 
 import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
-@Data
+@Getter
+@Setter
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
@@ -15,10 +13,13 @@ import lombok.NoArgsConstructor;
 @Table(name = "CONTO", uniqueConstraints = @UniqueConstraint(columnNames = {"descrizione"}))
 public class ContoEntity extends PanacheEntityBase {
 
+    public static final String ID = "id";
+    public static final String DESCRIZIONE = "descrizione";
+
     @Id
     @Column(name = "id_conto")
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "conto_seq")
-    @SequenceGenerator(name = "conto_seq", sequenceName = "SQC_CONTO", allocationSize = 1)
+    @SequenceGenerator(name = "conto_seq", sequenceName = "SEQ_CONTO", allocationSize = 1)
     private Long id;
 
     @Column(name = "descrizione", nullable = false, length = 50)
