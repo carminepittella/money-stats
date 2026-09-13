@@ -1,8 +1,11 @@
 # Stage 1: Build dell'applicazione con Maven e JDK 21
 FROM maven:3.9.9-eclipse-temurin-21 AS builder
 WORKDIR /app
-COPY pom.xml mvnw mvnw.cmd ./
+
+# Copia file Maven e dipendenz
+COPY pom.xml mvnw mvnw./cmd ./
 COPY .mvn ./.mvn
+RUN chmod +x ./mvnw
 
 # Pre-download delle dipendenze per velocizzare i build successivi
 RUN ./mvnw dependency:go-offline -B
