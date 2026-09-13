@@ -28,7 +28,7 @@ Il backend **MoneyStats** è un'applicazione REST Java 21 basata sul framework *
 | **Data Layer** | Hibernate ORM con Panache Pattern | Repository pattern (`PanacheRepositoryBase`) e mappatura JPA entità relazionali. |
 | **Mapping DTO** | MapStruct | Mappatura automatica tra Entity JPA e DTO di trasporto. |
 | **Logging** | Access Log configurato | Access log HTTP con tracciamento IP, metodo, endpoint, status code e tempi di risposta. |
-| **CI/CD** | GitHub Actions (`.github/workflows/ci.yml`) | Step di checkout, setup JDK 21 e `mvnw verify`. |
+| **CI/CD** | GitHub Actions (`../.github/workflows/ci.yml`) | Step di checkout, setup JDK 21 e `mvnw verify`. |
 
 ---
 
@@ -36,8 +36,8 @@ Il backend **MoneyStats** è un'applicazione REST Java 21 basata sul framework *
 
 ### 🔴 Bloccante 1: Mancanza di un Dockerfile per Cloud Build (Multi-Stage)
 * **Problema**: Render non supporta nativamente Java/Maven per i Web Service standard (supporta Node, Python, Go, Rust, Ruby). Richiede l'ambiente **Docker**.
-* **Dettaglio**: In `src/main/docker/Dockerfile.jvm` esiste un Dockerfile Quarkus, ma presuppone che il comando `mvnw package` sia già stato eseguito sull'host prima del build (`COPY target/quarkus-app/...`). Poiché `target/` è in `.gitignore`, il build su Render fallirà immediatamente.
-* **Soluzione**: Creare un `Dockerfile` alla radice con approccio **Multi-Stage** (Stage 1: build con Maven + JDK 21; Stage 2: immagine runtime leggera OpenJDK 21).
+* **Dettaglio**: In `../src/main/docker/Dockerfile.jvm` esiste un Dockerfile Quarkus, ma presuppone che il comando `mvnw package` sia già stato eseguito sull'host prima del build (`COPY target/quarkus-app/...`). Poiché `target/` è in `.gitignore`, il build su Render fallirà immediatamente.
+* **Soluzione**: Creare un `../Dockerfile` alla radice con approccio **Multi-Stage** (Stage 1: build con Maven + JDK 21; Stage 2: immagine runtime leggera OpenJDK 21).
 
 ### 🔴 Bloccante 2: Gestione Porta Dinamica (`PORT`)
 * **Problema**: Render assegna all'applicazione una porta tramite la variabile d'ambiente `PORT` (di norma `10000`) o ascolta su quella esposta.
@@ -60,7 +60,7 @@ Il backend **MoneyStats** è un'applicazione REST Java 21 basata sul framework *
 * **Problema**: Render non fornisce un servizio Oracle Database (supporta solo PostgreSQL e Redis). Il database deve risiedere su un servizio esterno (es. Oracle Cloud Infrastructure - OCI Autonomous DB).
 * **Dettaglio**:
   - Se si utilizza il database sul PC locale (`homepc:1521`), Render **non può raggiungerlo** (rete privata/NAT).
-  - Se si usa **Oracle Autonomous Database**, nel file `.env` locale è presente un riferimento a un Wallet con path Windows:
+  - Se si usa **Oracle Autonomous Database**, nel file `../.env` locale è presente un riferimento a un Wallet con path Windows:
     `cloud-oracle-moneystats-url=jdbc:oracle:thin:@mnydb_medium?TNS_ADMIN=C:/DB/Wallet_MNYDB`
     Questo percorso su Linux non esiste.
 * **Soluzione**:
@@ -98,14 +98,14 @@ Il piano gratuito di Render fornisce 512 MB di RAM. Java 21 + Quarkus + Hibernat
   ```
 
 ### 🟡 Criticità 3: Health Check per Zero-Downtime e Monitoring
-Render offre controlli di integrità tramite un path configurabile (Health Check Path). In `application.properties` c'è l'esclusione dai log per `/q/health/.*`, ma nel `pom.xml` **manca** l'estensione `quarkus-smallrye-health`.
+Render offre controlli di integrità tramite un path configurabile (Health Check Path). In `application.properties` c'è l'esclusione dai log per `/q/health/.*`, ma nel `../pom.xml` **manca** l'estensione `quarkus-smallrye-health`.
 * **Soluzione**: Aggiungere la dipendenza Maven `io.quarkus:quarkus-smallrye-health` per esporre `/q/health/live` e `/q/health/ready`.
 
 ### 🟡 Criticità 4: Variabili JWT mancanti
 Senza configurare `JWT_PUBLIC_KEY` e `JWT_PRIVATE_KEY` nelle variabili d'ambiente di Render, l'applicazione non riuscirà a firmare o verificare i token JWT.
 
 ### 🟡 Criticità 5: Assenza di Migrazioni Automatiche del Database
-Il progetto contiene gli script DDL in `sql/` (`creazione_tabelle.sql`, `sequence.sql`, `creazione_viste.sql`), ma non usa Flyway o Liquibase. Le tabelle e le sequenze devono essere create preventivamente nel database prima di avviare il backend.
+Il progetto contiene gli script DDL in `../sql` (`creazione_tabelle.sql`, `sequence.sql`, `creazione_viste.sql`), ma non usa Flyway o Liquibase. Le tabelle e le sequenze devono essere create preventivamente nel database prima di avviare il backend.
 
 ### 🟡 Criticità 6: Assenza di Test Unitari (`src/test`)
 Non ci sono classi di test automatizzate, quindi il workflow CI si limita a verificare la compilazione senza validare la logica applicativa.
@@ -116,12 +116,12 @@ Non ci sono classi di test automatizzate, quindi il workflow CI si limita a veri
 
 | Aspetto | Stato Attuale | Requisito Render | Pronto? |
 | :--- | :--- | :--- | :---: |
-| **Runtime Container** | Solo file template in `src/main/docker` che cercano `target/` | Multi-Stage `Dockerfile` in root con build Maven | ❌ NO |
+| **Runtime Container** | Solo file template in `../src/main/docker` che cercano `target/` | Multi-Stage `../Dockerfile` in root con build Maven | ❌ NO |
 | **Porta Web** | 8080 fisso | Dinamica su `${PORT:8080}` | ❌ NO |
 | **Profilo Produzione** | Configurato solo `%dev` e `%cloud` | Mappatura profilo `%prod` o variabili standard | ❌ NO |
 | **Database Esterno** | URL verso PC locale o wallet locale `C:/DB/...` | Oracle Cloud con TLS o Wallet montato su Linux path | ❌ NO |
 | **CORS Origins** | `http://localhost:4200` | Variabile d'ambiente `CORS_ORIGINS` | ❌ NO |
-| **JWT Environment** | Letto da `.env` locale | Variabili d'ambiente nel pannello Render | ⚠️ Da configurare |
+| **JWT Environment** | Letto da `../.env` locale | Variabili d'ambiente nel pannello Render | ⚠️ Da configurare |
 | **Tuning Memoria** | Nessun vincolo JVM restrittivo | Parametri JVM per stare sotto i 512MB | ⚠️ Da configurare |
 | **Health Check** | Regola nei log presente, ma dipendenza mancante | Estensione `quarkus-smallrye-health` | ⚠️ Opzionale raccomandato |
 | **IaC / Blueprint** | Assente | File `render.yaml` per setup automatico | ⚠️ Opzionale raccomandato |
@@ -130,16 +130,17 @@ Non ci sono classi di test automatizzate, quindi il workflow CI si limita a veri
 
 ## 6. Configurazione Pronta per Render
 
-### A. Esempio `Dockerfile` Multi-Stage (da posizionare nella root)
+### A. Esempio `../Dockerfile` Multi-Stage (da posizionare nella root)
+
 ```dockerfile
 # Stage 1: Build dell'applicazione con Maven e JDK 21
 FROM maven:3.9.9-eclipse-temurin-21 AS builder
 WORKDIR /app
-COPY pom.xml mvnw mvnw.cmd ./
-COPY .mvn ./.mvn
+COPY ../pom.xml mvnw mvnw.cmd ./
+COPY ../.mvn ./.mvn
 # Pre-download delle dipendenze per velocizzare i build successivi
 RUN ./mvnw dependency:go-offline -B
-COPY src ./src
+COPY ../src ./src
 RUN ./mvnw package -DskipTests -B
 
 # Stage 2: Immagine Runtime minimale UBI9 OpenJDK 21
