@@ -3,7 +3,7 @@ FROM maven:3.9.9-eclipse-temurin-21 AS builder
 WORKDIR /app
 
 # Copia file Maven e dipendenz
-COPY pom.xml mvnw mvnw./cmd ./
+COPY pom.xml mvnw mvnw.cmd ./
 COPY .mvn ./.mvn
 RUN chmod +x ./mvnw
 
