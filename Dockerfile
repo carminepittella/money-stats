@@ -2,15 +2,13 @@
 FROM maven:3.9.9-eclipse-temurin-21 AS builder
 WORKDIR /app
 
-# Copia file Maven e dipendenz
-COPY pom.xml mvnw mvnw.cmd ./
-COPY .mvn ./.mvn
-RUN chmod +x ./mvnw
-
 # Pre-download delle dipendenze per velocizzare i build successivi
-RUN ./mvnw dependency:go-offline -B
+COPY pom.xml ./
+RUN mvn dependency:go-offline -B
+
+# Compilazione dei sorgenti
 COPY src ./src
-RUN ./mvnw package -DskipTests -B
+RUN mvn package -DskipTests -B
 
 # Stage 2: Immagine Runtime minimale UBI9 OpenJDK 21
 FROM registry.access.redhat.com/ubi9/openjdk-21-runtime:1.24
