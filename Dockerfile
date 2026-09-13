@@ -22,7 +22,5 @@ COPY --from=builder --chown=185 /app/target/quarkus-app/app/ /deployments/app/
 COPY --from=builder --chown=185 /app/target/quarkus-app/quarkus/ /deployments/quarkus/
 
 EXPOSE 8080
-ENV JAVA_OPTS_APPEND="-Dquarkus.http.host=0.0.0.0 -Djava.util.logging.manager=org.jboss.logmanager.LogManager -Xms128m -Xmx320m -XX:+UseSerialGC"
-ENV JAVA_APP_JAR="/deployments/quarkus-run.jar"
 
-ENTRYPOINT [ "/opt/jboss/container/java/run/run-java.sh" ]
+CMD ["java", "-Xms128m", "-Xmx320m", "-Dquarkus.http.host=0.0.0.0", "-jar", "/deployments/quarkus-run.jar"]
