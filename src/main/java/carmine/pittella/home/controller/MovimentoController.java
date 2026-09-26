@@ -28,7 +28,6 @@ import java.util.Map;
 public class MovimentoController {
 
     private final MovimentoService movimentoService;
-    private final StatisticService statisticService;
 
     @GET
     @Path("/find-all")
@@ -54,12 +53,6 @@ public class MovimentoController {
     @Path("/dashboard-stats")
     public DashboardStatsResponseDto dashboardStats (@BeanParam MovimentiFilterRequestDto filter) {
         return movimentoService.getDashboardStats(filter);
-    }
-
-    @GET
-    @Path("/statistics")
-    public StatisticsResponseDto getStatistics (@BeanParam MovimentiFilterRequestDto filter) {
-        return statisticService.getStatistics(filter);
     }
 
 }
