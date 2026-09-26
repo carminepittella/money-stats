@@ -49,7 +49,7 @@ public class MovimentoBean implements MovimentoService {
             throw new BadRequestException("IMPORT_MOVIMENTI", errorMsg);
         }
 
-        // estraggo i movimenti dall'excel
+        // estraggo i movimenti dall'Excel
         List<MovimentoDto> movimentiDtoList = excelReaderService.extractMovimenti(fileUpload);
 
         if (movimentiDtoList == null || movimentiDtoList.isEmpty()) {
@@ -63,9 +63,6 @@ public class MovimentoBean implements MovimentoService {
 
     @Override
     public DashboardStatsResponseDto getDashboardStats (MovimentiFilterRequestDto filter) {
-        LocalDate dataInizio = filter.getDataInizio() != null ? filter.getDataInizio() : LocalDate.of(1900, 1, 1);
-        LocalDate dataFine = filter.getDataFine() != null ? filter.getDataFine() : LocalDate.of(2100, 1, 1);
-
-        return movimentoRepository.getDashboardStats(dataInizio, dataFine);
+        return movimentoRepository.getDashboardStats(filter);
     }
 }

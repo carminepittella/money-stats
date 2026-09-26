@@ -32,18 +32,34 @@ public class MovimentoRepository implements PanacheRepository<MovimentoEntity> {
         entityList.forEach(this::save);
     }
 
-    public DashboardStatsResponseDto getDashboardStats (LocalDate dataInizio, LocalDate dataFine) {
+    public DashboardStatsResponseDto getDashboardStats (MovimentiFilterRequestDto filter) {
+        LocalDate dataInizio = filter.getDataInizio() != null ? filter.getDataInizio() : LocalDate.of(1900, 1, 1);
+        LocalDate dataFine = filter.getDataFine() != null ? filter.getDataFine() : LocalDate.of(2100, 1, 1);
+
         String query = """
                 SELECT
-                	sum(CASE WHEN m.importo > 0 AND m.data BETWEEN :dataInizio AND :dataFine THEN m.importo ELSE 0 END) AS entrate,
-                	sum(CASE WHEN m.importo < 0 AND m.data BETWEEN :dataInizio AND :dataFine THEN m.importo ELSE 0 END) uscite,
-                	sum(m.importo) AS saldo
+                    COALESCE(SUM(CASE WHEN m.importo > 0
+                                      AND m.data BETWEEN :dataInizio AND :dataFine
+                                      AND (:idCategoria IS NULL OR m.categoria.id = :idCategoria)
+                                      AND (:idHashtag   IS NULL OR m.hashtag.id   = :idHashtag)
+                                      AND (:idConto     IS NULL OR m.conto.id     = :idConto)
+                                 THEN m.importo ELSE 0 END), 0) AS entrate,
+                    COALESCE(SUM(CASE WHEN m.importo < 0
+                                      AND m.data BETWEEN :dataInizio AND :dataFine
+                                      AND (:idCategoria IS NULL OR m.categoria.id = :idCategoria)
+                                      AND (:idHashtag   IS NULL OR m.hashtag.id   = :idHashtag)
+                                      AND (:idConto     IS NULL OR m.conto.id     = :idConto)
+                                 THEN m.importo ELSE 0 END), 0) AS uscite,
+                    COALESCE(SUM(m.importo), 0)               AS saldo
                 FROM MovimentoEntity m
                 """;
 
         Object[] result = (Object[]) getEntityManager().createQuery(query)
                 .setParameter("dataInizio", dataInizio.atStartOfDay())
-                .setParameter("dataFine", dataFine.atStartOfDay())
+                .setParameter("dataFine", dataFine.plusDays(1).atStartOfDay())
+                .setParameter("idCategoria", filter.getIdCategoria())
+                .setParameter("idHashtag", filter.getIdHashtag())
+                .setParameter("idConto", filter.getIdConto())
                 .getSingleResult();
 
         return DashboardStatsResponseDto.builder()
